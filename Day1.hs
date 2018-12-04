@@ -1,4 +1,6 @@
 module Day1 where
+
+import Lib
 import qualified Data.Set as Set
 
 main :: IO ()
@@ -6,11 +8,6 @@ main = do
   lines <- readLines "input/day1.in"
   print $ foldl addInteger 0 lines
   print $ firstDupFreq (0, Set.singleton 0) $ cycle lines
-
-readLines :: String -> IO [String]
-readLines filename = do
-  content <- readFile filename
-  return $ lines content
 
 addInteger :: Integer -> String -> Integer
 addInteger acc (sign:number) = eval acc sign $ read number

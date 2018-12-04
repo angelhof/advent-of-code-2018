@@ -2,5 +2,6 @@
 # Emacs temp file
 *~
 
-# Input files
+# Input and example files
 *.in
+*.example
