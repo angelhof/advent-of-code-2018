@@ -15,3 +15,12 @@ sndEq x (_, snd) = snd == x
 boolToInt :: Bool -> Integer
 boolToInt True = 1
 boolToInt False = 0
+
+-- It extracts the third element of a triple
+third (_, _, t) = t
+
+-- This function orders to elements by using a getter
+-- Note: This is a more general composition of a binary
+--       function with a unary function
+ordGet :: Ord a => (b -> a) -> b -> b -> Ordering
+ordGet getter x1 x2 = compare (getter x1) (getter x2)
