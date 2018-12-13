@@ -24,3 +24,12 @@ third (_, _, t) = t
 --       function with a unary function
 ordGet :: Ord a => (b -> a) -> b -> b -> Ordering
 ordGet getter x1 x2 = compare (getter x1) (getter x2)
+
+-- An 0-indexing function returning maybe and an element
+nth :: [a] -> Int -> Maybe a
+nth list i
+  | i < 0 = Nothing 
+  | otherwise =
+    case drop i list of
+     [] -> Nothing
+     (x:_) -> Just x
