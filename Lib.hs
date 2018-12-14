@@ -7,6 +7,27 @@ readLines filename = do
   content <- readFile filename
   return $ lines content
 
+--
+-- Tree Functions
+--
+
+
+data Tree a = Node a [Tree a]
+            deriving (Show)
+
+-- Generic map over a tree
+mapTree :: (a -> b) -> Tree a -> Tree b
+mapTree f (Node x children) = Node (f x) children'
+  where
+    children' = map (mapTree f) children
+
+-- Generic fold over a tree                                        
+foldTree :: (a -> Tree b -> a) -> a -> Tree b -> a
+foldTree f acc t@(Node _ children) = f acc' t
+  where
+    acc' = foldl (foldTree f) acc children  
+
+
 -- It checks whether the second element of a tuple is equal to x
 sndEq :: Eq b => b -> (a, b) -> Bool
 sndEq x (_, snd) = snd == x
