@@ -1,5 +1,7 @@
 module Lib where
 
+import Data.Maybe as M
+
 -- This function reads a file and returns its lines.
 -- It doesn't do any error handling if the file doesn't exist
 readLines :: String -> IO [String]
@@ -27,6 +29,9 @@ foldTree f acc t@(Node _ children) = f acc' t
   where
     acc' = foldl (foldTree f) acc children  
 
+-- This is a generic bottom up fold function
+foldUp :: ([b] -> a -> b) -> b -> Tree a -> b
+foldUp f acc (Node x children) = f (map (foldUp f acc) children) x
 
 -- It checks whether the second element of a tuple is equal to x
 sndEq :: Eq b => b -> (a, b) -> Bool
@@ -54,3 +59,7 @@ nth list i
     case drop i list of
      [] -> Nothing
      (x:_) -> Just x
+
+-- This functions filters and keeps all the Just from a list
+extractJust :: [Maybe a] -> [a]
+extractJust = (map M.fromJust) . (filter M.isJust)

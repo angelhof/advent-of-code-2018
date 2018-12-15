@@ -1,23 +1,20 @@
 module Day8 where
 
 import Lib
-import Data.Maybe as M
 
 main :: IO ()
 main = do
   [line] <- readLines "input/day8.in"
   let (tree, []) = parseTree $ map read $ words line in do
    print $ foldTree sumMetadata 0 tree
-   print $ value tree
+   print $ foldUp value 0 tree
 
--- Returns the value of a node
-value :: MTree -> Int
-value (Node metadata []) = sum metadata
-value (Node metadata children) = sum $ [M.fromJust v | v <- indexed, M.isJust v]
-  where
-    values = map value children
-    indexed = map ((nth values).(\x -> x - 1)) metadata
-    
+-- This is to be used with foldUp which folds a tree bottom up
+-- value :: [Value] -> Metadata -> Value
+value :: [Int] -> [Int] -> Int
+value [] = sum 
+value values = sum . extractJust . (map ((nth values).(\x -> x - 1)))
+                                 
 -- Function that sums the metadata entry of a node
 sumMetadata :: Int -> MTree -> Int
 sumMetadata acc (Node metadata _) = acc + sum metadata
