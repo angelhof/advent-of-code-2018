@@ -43,7 +43,9 @@ boolToInt True = 1
 boolToInt False = 0
 
 -- It extracts the third element of a triple
+second (_, s, _) = s
 third (_, _, t) = t
+
 
 -- This function orders to elements by using a getter
 -- Note: This is a more general composition of a binary
@@ -63,3 +65,26 @@ nth list i
 -- This functions filters and keeps all the Just from a list
 extractJust :: [Maybe a] -> [a]
 extractJust = (map M.fromJust) . (filter M.isJust)
+
+-- This returns an integer from its reverse digits
+fromDigits :: [Int] -> Int
+fromDigits = fromDigits' 1
+  where
+  fromDigits' acc [] = 0
+  fromDigits' acc (d:ds) = d*acc + fromDigits' (acc * 10) ds
+
+-- This returns the digits of an integer
+toDigits :: Int -> [Int]
+toDigits x =
+  let
+    digs 0 = []
+    digs x = x `mod` 10 : digs (x `div` 10)
+  in
+  case digs x of
+   [] -> [0]
+   xDigs -> xDigs
+
+-- Int to string with leading zeros
+showD :: Int -> Int -> String 
+showD d n = take (d - (length str)) (repeat '0') ++ str
+  where str = show n

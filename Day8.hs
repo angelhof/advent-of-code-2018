@@ -9,9 +9,11 @@ main = do
    print $ foldTree sumMetadata 0 tree
    print $ foldUp value 0 tree
 
+type Metadata = [Int]
+type MTree = Tree Metadata
+  
 -- This is to be used with foldUp which folds a tree bottom up
--- value :: [Value] -> Metadata -> Value
-value :: [Int] -> [Int] -> Int
+value :: [Int] -> Metadata -> Int
 value [] = sum 
 value values = sum . extractJust . (map ((nth values).(\x -> x - 1)))
                                  
@@ -24,8 +26,6 @@ sumMetadata acc (Node metadata _) = acc + sum metadata
 --
 
 type Token = Int
-  
-type MTree = Tree [Int]
 
 parseTree :: [Token] -> (MTree, [Token])
 parseTree (nC:nM:rest) = (Node metadata children, rest'')
