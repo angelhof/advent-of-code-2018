@@ -31,6 +31,7 @@ initState = ((0,1), M.fromList [(0, 3), (1, 7)], 2)
 lenGT :: Int -> State -> Bool
 lenGT n (_, _, len) = len >= n
 
+-- There is an implicit assumption here that only 2 recipes could be added each round
 infixIn :: [Int] -> State -> Bool
 infixIn key (_, recipes, len) = isInfixOf key $ getRecipes [(max 0 (len-10))..(len-1)] recipes
 
@@ -43,18 +44,13 @@ execRound = updateIndexes . addRecipes
 addRecipes :: State -> State
 addRecipes state@((i1, i2), recipes, len) = appendRecipes newRecipes state
   where
-    -- WARNING: The indexing operator here is the bottleneck
-    rec1 = getRecipe i1 recipes
-    rec2 = getRecipe i2 recipes
-    newRecipes = toDigits $ rec1 + rec2
+    newRecipes = toDigits $ (getRecipe i1 recipes) + (getRecipe i2 recipes) 
 
 updateIndexes :: State -> State
 updateIndexes ((i1, i2), recipes, len) = ((i1', i2'), recipes, len)
   where
-    move1 = 1 + (getRecipe i1 recipes)
-    move2 = 1 + (getRecipe i2 recipes)
-    i1' = (move1 + i1) `mod` len
-    i2' = (move2 + i2) `mod` len    
+    i1' = (i1 + 1 + (getRecipe i1 recipes)) `mod` len
+    i2' = (i2 + 1 + (getRecipe i2 recipes)) `mod` len    
 
 
 --
