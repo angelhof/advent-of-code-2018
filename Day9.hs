@@ -35,9 +35,7 @@ playRound c@(marbles, next, scores)
     scores' = updateScores next (next + removed) scores    
     
 updateScores :: Int -> Int -> Scores -> Scores
-updateScores round newScore (players, scores) = (players, M.adjust (newScore +) player scores)
-  where
-    player = round `mod` players
+updateScores round newScore (ps, scores) = (ps, M.adjust (newScore +) (round `mod` ps) scores)
 
 
 -- Zippers on cycling lists

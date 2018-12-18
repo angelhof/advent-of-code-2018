@@ -88,3 +88,7 @@ toDigits x =
 showD :: Int -> Int -> String 
 showD d n = take (d - (length str)) (repeat '0') ++ str
   where str = show n
+
+-- Compose
+inj :: (b -> b -> c) -> (a -> b) -> a -> a -> c
+f `inj` op = \x y -> f (op x) (op y)
