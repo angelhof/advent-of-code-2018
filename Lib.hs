@@ -1,6 +1,7 @@
 module Lib where
 
-import Data.Maybe as M
+import qualified Data.Maybe as Maybe
+import qualified Data.Map as Map
 
 -- This function reads a file and returns its lines.
 -- It doesn't do any error handling if the file doesn't exist
@@ -46,6 +47,8 @@ boolToInt False = 0
 second (_, s, _) = s
 third (_, _, t) = t
 
+-- Update the snd element of a tuple
+uSnd f (a, b) = (a, f b)
 
 -- This function orders to elements by using a getter
 -- Note: This is a more general composition of a binary
@@ -64,7 +67,7 @@ nth list i
 
 -- This functions filters and keeps all the Just from a list
 extractJust :: [Maybe a] -> [a]
-extractJust = (map M.fromJust) . (filter M.isJust)
+extractJust = (map Maybe.fromJust) . (filter Maybe.isJust)
 
 -- This returns an integer from its reverse digits
 fromDigits :: [Int] -> Int
@@ -89,6 +92,14 @@ showD :: Int -> Int -> String
 showD d n = take (d - (length str)) (repeat '0') ++ str
   where str = show n
 
--- Compose
+-- Compose of a 2 argument function with a one argument function
 inj :: (b -> b -> c) -> (a -> b) -> a -> a -> c
 f `inj` op = \x y -> f (op x) (op y)
+
+-- Apply a function on a map and an accumulator until the map is empty
+foldMapGeneric :: (Map.Map k a -> b -> (Map.Map k a, b)) -> Map.Map k a -> b -> b
+foldMapGeneric f m acc
+  | Map.null m  = acc
+  | otherwise = foldMapGeneric f m' acc'
+  where
+    (m', acc') = f m acc

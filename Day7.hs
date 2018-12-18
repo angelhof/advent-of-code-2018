@@ -10,7 +10,7 @@ main = do
   lines <- readLines "input/day7.in"
   let edges = edgeMap $ map parseEdge lines in do
     print . totalOrder $ edges;
-    print . last $ totalWork 5 edges --totOrder
+    print . last $ totalWork 5 edges
 
 type V = Char
 type E = (Char, Char)
@@ -20,13 +20,8 @@ type CostEdgeMap = M.Map V (Int, [V])
 -- Part 2
 
 totalWork :: Int -> EdgeMap -> [Int]
-totalWork workers edges = totalWork' (M.map (\vs -> (0, vs)) edges) (map (\_ -> 0) [1..workers])
-  where
-    totalWork' edges workers
-      | M.null edges = workers
-      | otherwise    = totalWork' edges' workers'
-      where
-        (edges', workers') = removeAndAllocate edges workers
+totalWork workers edges =
+  foldMapGeneric removeAndAllocate (M.map (\vs -> (0, vs)) edges) (map (\_ -> 0) [1..workers])
 
 addWork :: [Int] -> (V, Int) -> ([Int], Int)
 addWork (w:ws) (v, startTime) = (sort $ endTime:ws, endTime)
@@ -56,12 +51,9 @@ removeAndUpdateNode (v, earliest) edges = M.map removeAndUpdateNode' $ M.delete 
 -- Part 1
                                           
 totalOrder :: EdgeMap -> [V]
-totalOrder edges = totalOrder' edges []
+totalOrder edges = reverse $ foldMapGeneric totalOrder' edges []
   where
-    totalOrder' edges acc
-      | M.null edges = reverse acc
-      | otherwise    = totalOrder' edges' (v:acc)
-      where (edges', v) = removeFirst edges
+    totalOrder' edges acc = uSnd (\v -> v:acc) $ removeFirst edges
 
 removeFirst :: EdgeMap -> (EdgeMap, V)
 removeFirst edges = (edges', first)
