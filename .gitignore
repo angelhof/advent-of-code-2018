@@ -5,3 +5,8 @@
 # Input and example files
 *.in
 *.example
+
+# Haskell Object Files
+*.hi
+*.o
+*.prof

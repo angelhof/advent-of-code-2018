@@ -103,3 +103,13 @@ foldMapGeneric f m acc
   | otherwise = foldMapGeneric f m' acc'
   where
     (m', acc') = f m acc
+
+-- Breaks a list into sliding windows of the specified length
+windowfy :: Int -> [a] -> [[a]]
+windowfy n l = windowfy' n l []
+  where
+    windowfy' n l acc =
+      let first = take n l in
+      if length first == n
+      then windowfy' n (tail l) $ first:acc
+      else reverse acc
